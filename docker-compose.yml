@@ -9,15 +9,14 @@ volumes:
   jenkins-data:
 
 services:
-  nexus:
-    build: ./docker-nexus3
-    restart: always
-    ports:
-      - "18081:8081"
-    networks:
-      - prodnetwork
-    volumes:
-      - nexus-data:/nexus-data
+ tomcat:
+   image: vulhub/tomcat:8.0
+   volumes:
+    - ./tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+    - ./context.xml:/usr/local/tomcat/webapps/manager/META-INF/context.xml
+    - ./context.xml:/usr/local/tomcat/webapps/host-manager/META-INF/context.xml
+   ports:
+    - "8080:8080"
   jenkins:
     build: ./jenkins
     restart: always
@@ -33,7 +32,6 @@ services:
       - nexus
       - sonar
     environment:
-      - NEXUS_PORT=8081
       - SONAR_PORT=9000
       - SONAR_DB_PORT=5432
   sonardb:
